@@ -7,11 +7,11 @@
  * @module markdown-gfm/gfmdataprocessor
  */
 
-import marked from './lib/marked/marked';
-import toMarkdown from './lib/to-markdown/to-markdown';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import GFMRenderer from './lib/marked/renderer';
-import converters from './lib/to-markdown/converters';
+import marked from "./lib/marked/marked";
+import toMarkdown from "./lib/to-markdown/to-markdown";
+import HtmlDataProcessor from "@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor";
+import GFMRenderer from "./lib/marked/renderer";
+import converters from "./lib/to-markdown/converters";
 
 /**
  * This data processor implementation uses GitHub Flavored Markdown as input/output data.
@@ -26,14 +26,14 @@ export default class GFMDataProcessor {
 	 *
 	 * @param {module:engine/view/document~Document} document
 	 */
-	constructor( document ) {
+	constructor(document) {
 		/**
 		 * HTML data processor used to process HTML produced by the Markdown-to-HTML converter and the other way.
 		 *
 		 * @private
 		 * @member {module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}
 		 */
-		this._htmlDP = new HtmlDataProcessor( document );
+		this._htmlDP = new HtmlDataProcessor(document);
 	}
 
 	/**
@@ -42,16 +42,16 @@ export default class GFMDataProcessor {
 	 * @param {String} data A Markdown string.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} The converted view element.
 	 */
-	toView( data ) {
-		const html = marked.parse( data, {
+	toView(data) {
+		const html = marked.parse(data, {
 			gfm: true,
 			breaks: true,
 			tables: true,
 			xhtml: true,
 			renderer: new GFMRenderer()
-		} );
+		});
 
-		return this._htmlDP.toView( html );
+		return this._htmlDP.toView(html);
 	}
 
 	/**
@@ -61,9 +61,8 @@ export default class GFMDataProcessor {
 	 * @param {module:engine/view/documentfragment~DocumentFragment} viewFragment
 	 * @returns {String} Markdown string.
 	 */
-	toData( viewFragment ) {
-		const html = this._htmlDP.toData( viewFragment );
-
-		return toMarkdown( html, { gfm: true, converters } );
+	toData(viewFragment) {
+		const html = this._htmlDP.toData(viewFragment).replace(/<p>(&nbsp;)*<\/p>/g, "<p><span style='visibility:hidden'>NewLine</span></p>");
+		return toMarkdown(html, { gfm: true, converters });
 	}
 }
